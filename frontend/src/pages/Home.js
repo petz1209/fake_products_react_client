@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import 'App.css'
+//import 'App.css'
 import ShopService from 'services/ShopService.js'
 import CategoryService from 'services/CategoryService';
 import Table from 'components/Table';

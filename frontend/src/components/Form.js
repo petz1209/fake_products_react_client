@@ -58,6 +58,7 @@ export default function Form({primaryId, setPrimaryId, updateItem, addItem }){
 
             <h3>cateogyId: {category.id}</h3>
             <CustomAutoComplete 
+                                label={"Categories"}
                                 primary={category} 
                                 setPrimary={setCategory} 
                                 searchService={categoryService.find_by_name}
