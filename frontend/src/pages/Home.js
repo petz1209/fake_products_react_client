@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import 'App.css'
 import ShopService from 'services/ShopService.js'
+import CategoryService from 'services/CategoryService';
 import Table from 'components/Table';
 import Form from 'components/Form';
 
 export default function Home() {
 
   const shopService = new ShopService();
+  
 
   const [product_id, setProductId] = useState(null);
   const [productName, setProductName] = useState("Yo Bruno How Are you"); 
@@ -48,12 +50,17 @@ export default function Home() {
 
 
   const addItem = async (body) => {
+
+    // adjust body due to faked category autocomplete logic
+    body.category = body.category.name;
     const data = await shopService.post(body);
     console.log(data);
     //todo we need a way to hook this so only the specific row in < AgGridReact /> is updated, rather then the whole table
 
   }
   const updateItem = async (id, body) => {
+    // adjust body due to faked category autocomplete logic
+    body.category = body.category.name;
     const data = await shopService.patch(id, body);
     console.log(data);
     //todo we need a way to hook this so only the specific row in < AgGridReact /> is updated, rather then the whole table

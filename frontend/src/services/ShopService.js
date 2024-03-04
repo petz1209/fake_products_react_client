@@ -28,6 +28,8 @@ class ShopService{
     }
 
     async patch(productId, body){
+
+        console.log(`patchBody: ${JSON.stringify(body)}`)
         const response = await fetch(this.$api + `/products/${productId}` , {
             method: 'PATCH',
             headers: {"Content-Type": "application/json", },

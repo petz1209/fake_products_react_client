@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-
+import { categoryService } from "services/CategoryService";
+import CustomAutoComplete from "./CustomAutoComplete";
 
 export default function Form({primaryId, setPrimaryId, updateItem, addItem }){
 
+    //const categoryService = new CategoryService();
+
     const [title, setTitle] = useState("");
     const [price, setPrice] = useState("");
-    const [category, setCategory] = useState("");
-
+    const [category, setCategory] = useState({id: null, name: ""});
     const [description, setDescription] = useState("test description");
     const [image, setImage] = useState("null")
 
@@ -15,31 +17,37 @@ export default function Form({primaryId, setPrimaryId, updateItem, addItem }){
         const dataCollector = async () => {
             
             const response = await fetch(`http://localhost:8000/products/${primaryId}`);
-            console.log(response.status);
             const data = await response.json();
-            console.log(`data: ${data}`);
             setTitle(data.title);
             setPrice(data.price);
-            setCategory(data.category);
             setDescription(data.description);
             setImage(data.image);
+
+
+            const categoryResponse = await fetch(`http://localhost:8000/categories/by_name/${data.category}`);
+            const category_data = await categoryResponse.json();
+            setCategory({...category_data});
+
             return data;
         }
 
         if (primaryId && primaryId !== null){
             dataCollector();
+            
         } else {
             setTitle("");
             setPrice("");
-            setCategory("");
+            setCategory({id: null, name: ""});
             setDescription("test desc");
             setImage("");
         }
     }, [primaryId])
 
 
+    console.log(`stateCategory: ${JSON.stringify(category)}`);
+
     return(
-        <div>
+        <div Style={{margin: 100}}>
             <input type="text" placeholder="title" 
             value={title}
             onChange={(e) => {setTitle(e.target.value)}} />
@@ -48,9 +56,12 @@ export default function Form({primaryId, setPrimaryId, updateItem, addItem }){
             value={price}
             onChange={(e) => {setPrice(e.target.value)}} />
 
-            <input type="text" placeholder="category" 
-            value={category}
-            onChange={(e) => {setCategory(e.target.value)}} />
+            <h3>cateogyId: {category.id}</h3>
+            <CustomAutoComplete 
+                                primary={category} 
+                                setPrimary={setCategory} 
+                                searchService={categoryService.find_by_name}
+            />
         
             {
                 primaryId ?
