@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 //import 'App.css'
 import ShopService from 'services/ShopService.js'
 import CategoryService from 'services/CategoryService';
-import Table from 'components/Table';
+import CustomTable from 'components/CustomTable';
 import Form from 'components/Form';
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
   
 
   const [product_id, setProductId] = useState(null);
-  const [productName, setProductName] = useState("Yo Bruno How Are you"); 
+ 
 
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(null);
@@ -57,15 +57,26 @@ export default function Home() {
     console.log(data);
     //todo we need a way to hook this so only the specific row in < AgGridReact /> is updated, rather then the whole table
 
-  }
+  };
+
   const updateItem = async (id, body) => {
     // adjust body due to faked category autocomplete logic
     body.category = body.category.name;
     const data = await shopService.patch(id, body);
     console.log(data);
     //todo we need a way to hook this so only the specific row in < AgGridReact /> is updated, rather then the whole table
-  }
+    setRows(
+      rows.map((row, index) => {
+        if (row.id === id) {
+          return { id: id, ...data };
+        } else {
+          return row;
+        }
+      })
+    );
+  };
 
+  const getRowId = useCallback((params) => params.data.id, []);
 
   return (
       
@@ -79,7 +90,12 @@ export default function Home() {
       <button onClick={(e) => {loadTable()}}>getData</button>
 
       {rows ?
-        <Table columns={columns} rows={rows}
+        <CustomTable 
+        colorMode="dark"
+        tableStyle="comfort"
+        getRowId={getRowId}
+        columns={columns} 
+        rows={rows}
          rowSelection={rowSelection}
          rowSelectCallback={rowSelectCallback}
         />
