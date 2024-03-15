@@ -1,18 +1,17 @@
 import { useState, useCallback } from 'react'
 //import 'App.css'
 import ShopService from 'services/ShopService.js'
-import CategoryService from 'services/CategoryService';
 import CustomTable from 'components/CustomTable';
+import { categoryService }  from "services/CategoryService";
 import Form from 'components/Form';
 
 export default function Home() {
 
   const shopService = new ShopService();
-  
+  // categoryService = new CategoryService();
 
   const [product_id, setProductId] = useState(null);
- 
-
+  const [formReset, setFormReset] = useState(true);
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(null);
 
@@ -56,6 +55,10 @@ export default function Home() {
     const data = await shopService.post(body);
     console.log(data);
     //todo we need a way to hook this so only the specific row in < AgGridReact /> is updated, rather then the whole table
+    setRows(() => {const new_rows = [...rows]; new_rows.push(data); return new_rows;})
+    // now we reset form
+    setFormReset(!formReset)
+    console.log(!formReset)
 
   };
 
@@ -84,6 +87,9 @@ export default function Home() {
       <div>product_id: {product_id}</div>
       <Form primaryId={product_id} setPrimaryId={setProductId}
             updateItem={updateItem} addItem={addItem}
+            categoryService={categoryService}
+            formReset={formReset}
+
       />
 
       <button onClick={(e) => {setProductId(null)}}>new</button>
@@ -91,8 +97,8 @@ export default function Home() {
 
       {rows ?
         <CustomTable 
-        colorMode="dark"
-        tableStyle="comfort"
+        colorMode="light"
+        tableStyle="compact"
         getRowId={getRowId}
         columns={columns} 
         rows={rows}

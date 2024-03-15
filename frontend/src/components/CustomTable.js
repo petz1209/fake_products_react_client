@@ -18,8 +18,8 @@ const CustomTable = memo(
   ({
     columns,
     rows,
-    colorMode = "light",
-    tableStyle = "compact",
+    colorMode = "light",  // Select color Scheme (light | dark)
+    tableStyle = "compact", // Select tableStyle(compact | comfort)
     rowSelectCallback = (p) => {
       console.log(p);
     },

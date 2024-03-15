@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import { categoryService } from "services/CategoryService";
-import CustomAutoComplete from "./CustomAutoComplete";
+//import { categoryService }  from "services/CategoryService";
+import LiveSearch from "./LiveSearch";
 
-export default function Form({primaryId, setPrimaryId, updateItem, addItem }){
-
-    //const categoryService = new CategoryService();
+export default function Form({primaryId, updateItem, addItem, categoryService, formReset}){
 
     const [title, setTitle] = useState("");
     const [price, setPrice] = useState("");
@@ -41,7 +39,7 @@ export default function Form({primaryId, setPrimaryId, updateItem, addItem }){
             setDescription("test desc");
             setImage("");
         }
-    }, [primaryId])
+    }, [primaryId, formReset])
 
 
     console.log(`stateCategory: ${JSON.stringify(category)}`);
@@ -57,12 +55,21 @@ export default function Form({primaryId, setPrimaryId, updateItem, addItem }){
             onChange={(e) => {setPrice(e.target.value)}} />
 
             <h3>cateogyId: {category.id}</h3>
-            <CustomAutoComplete 
-                                label={"Categories"}
-                                primary={category} 
-                                setPrimary={setCategory} 
-                                searchService={categoryService.find_by_name}
+            
+            <LiveSearch 
+                componentId="categories"
+                width={80}
+                primary={category}
+                setPrimary={setCategory}
+                searchService={categoryService.find_by_name}
+                onSearchFieldValueChangeHandlers={setCategory}
+                empty_interface={{id: null, name: ""}}
+                sleepMs={0}
+                minChars={1}
+                
             />
+
+            
         
             {
                 primaryId ?
@@ -77,14 +84,10 @@ export default function Form({primaryId, setPrimaryId, updateItem, addItem }){
                     image: image, rating: {rate: 0, count:0}})}}>add</button>
             }
 
-            <img src={image} alt="product image"
-            Style={"width: 200px; height:atuo"}
+            <img src={image} alt="Sku display"
+            Style={"width: 200px; height: atuo"}
             
             />
-
-            
-
-
 
         </div>
 
